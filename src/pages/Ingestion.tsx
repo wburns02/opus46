@@ -4,7 +4,7 @@ import {
   Clock, Eye, ChevronRight, ArrowLeft, ThumbsUp, ThumbsDown, Edit3,
   Loader2, FileCheck, Sparkles, BarChart3
 } from 'lucide-react'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { ocrBatches, ocrExtractedRecords, projects } from '../data/mockData'
 import type { OcrBatch, OcrExtractedRecord, OcrBatchStatus } from '../types'
 
@@ -30,36 +30,62 @@ export default function Ingestion() {
   const [filter, setFilter] = useState<'all' | 'pending_review' | 'approved' | 'rejected' | 'corrected'>('all')
   const [editingField, setEditingField] = useState<string | null>(null)
   const [editValue, setEditValue] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const processFiles = useCallback((files: File[]) => {
+    const pdfFiles = files.filter(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'))
+    if (pdfFiles.length === 0) return
+
+    pdfFiles.forEach((file, idx) => {
+      const batchId = `ocr-${Date.now()}-${idx}`
+      const newBatch: OcrBatch = {
+        id: batchId,
+        fileName: file.name,
+        fileSize: file.size < 1024 * 1024
+          ? `${(file.size / 1024).toFixed(0)} KB`
+          : `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        uploadedBy: 'Kim Johnson',
+        uploadedAt: new Date().toISOString(),
+        projectId: 'p1',
+        projectName: 'HEDIS 2026 - BCBSTX',
+        status: 'uploading',
+        totalPages: Math.max(1, Math.floor(file.size / 5000) || Math.floor(Math.random() * 40) + 5),
+        recordsExtracted: 0,
+        recordsApproved: 0,
+        recordsRejected: 0,
+        processingTime: null,
+        errorMessage: null,
+      }
+      setBatches(prev => [newBatch, ...prev])
+
+      // Uploading → Processing after 1s
+      setTimeout(() => {
+        setBatches(prev => prev.map(b =>
+          b.id === batchId ? { ...b, status: 'processing' as const } : b
+        ))
+      }, 1000)
+
+      // Processing → Ready for Review after 3-6s
+      const processingTime = 3000 + Math.random() * 3000
+      setTimeout(() => {
+        const extracted = Math.floor(Math.random() * 30) + 10
+        setBatches(prev => prev.map(b =>
+          b.id === batchId ? {
+            ...b,
+            status: 'ready_for_review' as const,
+            recordsExtracted: extracted,
+            processingTime: `${Math.floor(Math.random() * 4) + 1}m ${Math.floor(Math.random() * 59)}s`,
+          } : b
+        ))
+      }, 1000 + processingTime)
+    })
+  }, [])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf')
-    if (files.length === 0) return
-    const newBatch: OcrBatch = {
-      id: `ocr-${Date.now()}`,
-      fileName: files[0].name,
-      fileSize: `${(files[0].size / (1024 * 1024)).toFixed(1)} MB`,
-      uploadedBy: 'Kim Johnson',
-      uploadedAt: new Date().toISOString(),
-      projectId: 'p1',
-      projectName: 'HEDIS 2026 - BCBSTX',
-      status: 'processing',
-      totalPages: Math.floor(Math.random() * 200) + 20,
-      recordsExtracted: 0,
-      recordsApproved: 0,
-      recordsRejected: 0,
-      processingTime: null,
-      errorMessage: null,
-    }
-    setBatches(prev => [newBatch, ...prev])
-    // Simulate processing completion
-    setTimeout(() => {
-      setBatches(prev => prev.map(b =>
-        b.id === newBatch.id ? { ...b, status: 'ready_for_review' as const, recordsExtracted: Math.floor(Math.random() * 30) + 10, processingTime: `${Math.floor(Math.random() * 4) + 1}m ${Math.floor(Math.random() * 59)}s` } : b
-      ))
-    }, 3000)
-  }, [])
+    processFiles(Array.from(e.dataTransfer.files))
+  }, [processFiles])
 
   const approveRecord = (rec: OcrExtractedRecord) => {
     setRecords(prev => prev.map(r => r.id === rec.id ? { ...r, status: 'approved' as const, reviewedBy: 'Kim Johnson', reviewedAt: new Date().toISOString() } : r))
@@ -442,12 +468,26 @@ export default function Ingestion() {
               dragOver ? 'border-kdj-blue bg-kdj-blue/5' : 'border-kdj-border hover:border-kdj-blue/50'
             }`}
           >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,application/pdf"
+              multiple
+              className="hidden"
+              onChange={e => { if (e.target.files) { processFiles(Array.from(e.target.files)); e.target.value = '' } }}
+            />
             <Upload size={40} className={`mx-auto mb-4 ${dragOver ? 'text-kdj-blue' : 'text-kdj-muted'}`} />
             <h3 className="text-sm font-semibold text-kdj-text">Drop PDF Files Here</h3>
             <p className="text-xs text-kdj-muted mt-2">
               Drop medical record PDFs to start OCR extraction.
               Records will be automatically parsed and queued for review.
             </p>
+            <button
+              onClick={e => { e.stopPropagation(); fileInputRef.current?.click() }}
+              className="mt-4 inline-flex items-center gap-2 bg-kdj-blue text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-kdj-blue/90 transition-colors"
+            >
+              <Upload size={14} /> Select Files
+            </button>
             <div className="mt-4 flex items-center justify-center gap-2">
               <label className="flex items-center gap-2">
                 <span className="text-[10px] text-kdj-muted">Project:</span>
