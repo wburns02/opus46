@@ -44,7 +44,7 @@ export default function Reports() {
         <h1 className="text-2xl font-bold text-kdj-text flex items-center gap-2">
           <BarChart3 size={24} className="text-kdj-purple" /> Reports
         </h1>
-        <p className="text-sm text-kdj-muted mt-1">HARTS standard reports — 6 report types</p>
+        <p className="text-sm text-kdj-muted mt-1">Clarity standard reports — 6 report types</p>
       </div>
 
       {/* Report Types */}

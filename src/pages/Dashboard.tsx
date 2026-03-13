@@ -26,7 +26,7 @@ export default function Dashboard() {
     <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-kdj-text">Dashboard</h1>
-        <p className="text-sm text-kdj-muted mt-1">KDJ Consultants — HARTS Overview</p>
+        <p className="text-sm text-kdj-muted mt-1">KDJ Consultants — Clarity Overview</p>
       </div>
 
       {/* KPI Cards */}

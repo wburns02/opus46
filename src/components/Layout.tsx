@@ -41,7 +41,7 @@ export default function Layout() {
           {!collapsed && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
               <div className="text-sm font-semibold whitespace-nowrap">KDJ Consultants</div>
-              <div className="text-[10px] text-white/50 whitespace-nowrap">HARTS Platform</div>
+              <div className="text-[10px] text-white/50 whitespace-nowrap">Clarity Platform</div>
             </motion.div>
           )}
         </div>

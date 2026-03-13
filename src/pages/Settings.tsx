@@ -103,10 +103,10 @@ export default function Settings() {
           <h2 className="text-sm font-semibold text-kdj-text mb-1 flex items-center gap-2">
             <Database size={14} className="text-kdj-purple" /> System Information
           </h2>
-          <p className="text-[10px] text-kdj-muted mb-4">HARTS platform details</p>
+          <p className="text-[10px] text-kdj-muted mb-4">Clarity platform details</p>
           <div className="space-y-2">
             {[
-              { label: 'Platform', value: 'HARTS v3.2' },
+              { label: 'Platform', value: 'Clarity v1.0' },
               { label: 'SOC 2 Certification', value: 'Type II — Valid through Dec 2026' },
               { label: 'HIPAA Status', value: 'Compliant' },
               { label: 'Database', value: 'Encrypted (AES-256)' },

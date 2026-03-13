@@ -276,10 +276,10 @@ export const auditEntries: AuditEntry[] = [
   { id: 'a5', timestamp: '2026-03-13T09:10:00Z', userId: 'r3', userName: 'Sharon Davis, RN', action: 'record_update', resource: 'Record rec-1018', details: 'Flagged for overread — date discrepancy', ipAddress: '67.10.234.18', success: true },
   { id: 'a6', timestamp: '2026-03-13T08:55:00Z', userId: 'admin1', userName: 'Kim Johnson (Admin)', action: 'export_data', resource: 'Compliance Report', details: 'Exported HEDIS measure rates to CSV', ipAddress: '98.174.22.56', success: true },
   { id: 'a7', timestamp: '2026-03-13T08:45:00Z', userId: 'ext-c2', userName: 'Mark Rodriguez (BCBSTX)', action: 'project_access', resource: 'Project p1', details: 'Client accessed project dashboard', ipAddress: '12.55.200.44', success: true },
-  { id: 'a8', timestamp: '2026-03-13T08:30:00Z', userId: 'r7', userName: 'Karen White, RN', action: 'login', resource: 'HARTS Portal', details: 'Successful login', ipAddress: '45.78.120.33', success: true },
-  { id: 'a9', timestamp: '2026-03-13T08:28:00Z', userId: 'unknown', userName: 'Unknown', action: 'login', resource: 'HARTS Portal', details: 'Failed login attempt — invalid credentials', ipAddress: '192.168.1.100', success: false },
-  { id: 'a10', timestamp: '2026-03-13T08:00:00Z', userId: 'admin1', userName: 'Kim Johnson (Admin)', action: 'login', resource: 'HARTS Portal', details: 'Successful login', ipAddress: '98.174.22.56', success: true },
-  { id: 'a11', timestamp: '2026-03-12T17:30:00Z', userId: 'r1', userName: 'Patricia Williams, RN', action: 'logout', resource: 'HARTS Portal', details: 'Session ended', ipAddress: '73.162.44.102', success: true },
+  { id: 'a8', timestamp: '2026-03-13T08:30:00Z', userId: 'r7', userName: 'Karen White, RN', action: 'login', resource: 'Clarity Portal', details: 'Successful login', ipAddress: '45.78.120.33', success: true },
+  { id: 'a9', timestamp: '2026-03-13T08:28:00Z', userId: 'unknown', userName: 'Unknown', action: 'login', resource: 'Clarity Portal', details: 'Failed login attempt — invalid credentials', ipAddress: '192.168.1.100', success: false },
+  { id: 'a10', timestamp: '2026-03-13T08:00:00Z', userId: 'admin1', userName: 'Kim Johnson (Admin)', action: 'login', resource: 'Clarity Portal', details: 'Successful login', ipAddress: '98.174.22.56', success: true },
+  { id: 'a11', timestamp: '2026-03-12T17:30:00Z', userId: 'r1', userName: 'Patricia Williams, RN', action: 'logout', resource: 'Clarity Portal', details: 'Session ended', ipAddress: '73.162.44.102', success: true },
   { id: 'a12', timestamp: '2026-03-12T16:45:00Z', userId: 'r2', userName: 'Maria Gonzalez, RN', action: 'view_phi', resource: 'Batch Export', details: 'Accessed 25 member records for batch review', ipAddress: '107.55.128.91', success: true },
 ]
 
@@ -330,7 +330,7 @@ export const trainingModules: TrainingModule[] = [
     totalAssigned: 8, completionRate: 37.5,
   },
   {
-    id: 't5', name: 'HARTS Platform Training', category: 'Technology',
+    id: 't5', name: 'Clarity Platform Training', category: 'Technology',
     requiredFor: ['hedis', 'pqrs', 'gpro', 'custom'], duration: '1.5 hours',
     completedBy: [
       { contractorId: 'r1', contractorName: 'Patricia Williams', completedDate: '2026-01-03', score: 100 },
@@ -374,7 +374,7 @@ export const dashboardStats: DashboardStats = {
     { action: 'Overread Complete', detail: 'Sharon Davis overread 15 records — 14 agree, 1 partial', time: '18 min ago' },
     { action: 'Records Received', detail: '45 new records received for HEDIS 2026 - BCBSTX', time: '1 hr ago' },
     { action: 'Invoice Paid', detail: 'TX Health Presbyterian paid INV-003 ($18,630)', time: '3 hr ago' },
-    { action: 'Training Completed', detail: 'Nancy Brown completed HARTS Platform Training (95%)', time: '5 hr ago' },
+    { action: 'Training Completed', detail: 'Nancy Brown completed Clarity Platform Training (95%)', time: '5 hr ago' },
     { action: 'Client Access', detail: 'Mark Rodriguez (BCBSTX) viewed project dashboard', time: '6 hr ago' },
     { action: 'Credential Alert', detail: 'Barbara Johnson RN license expires in 48 days', time: '8 hr ago' },
     { action: 'Project Created', detail: 'HEDIS 2026 - BSW Health moved to planning phase', time: '1 day ago' },
