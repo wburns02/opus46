@@ -3,9 +3,10 @@ import { motion } from 'framer-motion'
 import {
   LayoutDashboard, FolderKanban, FileText, Users, Building2,
   ShieldCheck, Receipt, BarChart3, ScrollText, GraduationCap,
-  Settings, Bell, ChevronLeft, ChevronRight, ScanLine
+  Settings, Bell, ChevronLeft, ChevronRight, ScanLine, LogOut, Lock
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuthStore } from '../stores/authStore'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -25,6 +26,18 @@ const navItems = [
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false)
+  const { user, logout, sessionExpiresAt } = useAuthStore()
+  const [sessionMinutes, setSessionMinutes] = useState(15)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (sessionExpiresAt) {
+        const remaining = Math.max(0, Math.ceil((sessionExpiresAt - Date.now()) / 60000))
+        setSessionMinutes(remaining)
+      }
+    }, 10_000)
+    return () => clearInterval(interval)
+  }, [sessionExpiresAt])
 
   return (
     <div className="flex h-screen overflow-hidden bg-kdj-surface">
@@ -75,17 +88,30 @@ export default function Layout() {
           {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
 
-        {/* User */}
+        {/* User + Logout */}
         <div className="px-5 py-4 border-t border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-kdj-purple flex items-center justify-center text-xs font-bold shrink-0">KJ</div>
+            <div className="w-8 h-8 rounded-full bg-kdj-purple flex items-center justify-center text-xs font-bold shrink-0">
+              {user ? user.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2) : '??'}
+            </div>
             {!collapsed && (
-              <div className="overflow-hidden">
-                <div className="text-xs font-medium whitespace-nowrap">Kim Johnson</div>
-                <div className="text-[10px] text-white/40 whitespace-nowrap">Project Manager</div>
+              <div className="flex-1 overflow-hidden">
+                <div className="text-xs font-medium whitespace-nowrap">{user?.name ?? 'Unknown'}</div>
+                <div className="text-[10px] text-white/40 whitespace-nowrap capitalize">{user?.role?.replace('_', ' ') ?? ''}</div>
               </div>
             )}
+            {!collapsed && (
+              <button onClick={logout} title="Sign Out" className="text-white/30 hover:text-kdj-red transition-colors">
+                <LogOut size={14} />
+              </button>
+            )}
           </div>
+          {!collapsed && (
+            <div className="flex items-center gap-1.5 mt-2 text-[10px] text-white/30">
+              <Lock size={9} />
+              <span>Session: {sessionMinutes}m remaining</span>
+            </div>
+          )}
         </div>
       </motion.aside>
 
