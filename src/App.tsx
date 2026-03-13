@@ -14,6 +14,7 @@ import Reports from './pages/Reports'
 import AuditLog from './pages/AuditLog'
 import Training from './pages/Training'
 import Settings from './pages/Settings'
+import Ingestion from './pages/Ingestion'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
+          <Route path="/ingestion" element={<Ingestion />} />
           <Route path="/records" element={<RecordQueue />} />
           <Route path="/quality" element={<Quality />} />
           <Route path="/contractors" element={<Contractors />} />

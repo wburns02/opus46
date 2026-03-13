@@ -1,6 +1,7 @@
 import type {
   Project, MedicalRecord, Contractor, Client, ComplianceItem,
-  Invoice, AuditEntry, TrainingModule, DashboardStats
+  Invoice, AuditEntry, TrainingModule, DashboardStats,
+  OcrBatch, OcrExtractedRecord
 } from '../types'
 
 // ── Clients ──────────────────────────────────────────────────────
@@ -380,3 +381,98 @@ export const dashboardStats: DashboardStats = {
     { action: 'Project Created', detail: 'HEDIS 2026 - BSW Health moved to planning phase', time: '1 day ago' },
   ],
 }
+
+// ── OCR Ingestion Data ──────────────────────────────────────────
+export const ocrBatches: OcrBatch[] = [
+  {
+    id: 'ocr-001', fileName: 'BCBSTX_Records_Batch_47.pdf', fileSize: '24.3 MB',
+    uploadedBy: 'Kim Johnson', uploadedAt: '2026-03-13T08:15:00Z',
+    projectId: 'p1', projectName: 'HEDIS 2026 - BCBSTX',
+    status: 'ready_for_review', totalPages: 186, recordsExtracted: 42,
+    recordsApproved: 0, recordsRejected: 0, processingTime: '3m 42s', errorMessage: null,
+  },
+  {
+    id: 'ocr-002', fileName: 'BCBSTX_Records_Batch_46.pdf', fileSize: '18.7 MB',
+    uploadedBy: 'Kim Johnson', uploadedAt: '2026-03-12T14:30:00Z',
+    projectId: 'p1', projectName: 'HEDIS 2026 - BCBSTX',
+    status: 'approved', totalPages: 142, recordsExtracted: 35,
+    recordsApproved: 33, recordsRejected: 2, processingTime: '2m 58s', errorMessage: null,
+  },
+  {
+    id: 'ocr-003', fileName: 'TXHealth_Presby_March_Records.pdf', fileSize: '31.1 MB',
+    uploadedBy: 'Kim Johnson', uploadedAt: '2026-03-13T09:00:00Z',
+    projectId: 'p2', projectName: 'HEDIS 2026 - TX Health Presby',
+    status: 'processing', totalPages: 248, recordsExtracted: 0,
+    recordsApproved: 0, recordsRejected: 0, processingTime: null, errorMessage: null,
+  },
+  {
+    id: 'ocr-004', fileName: 'NTX_Cardio_PQRS_Feb.pdf', fileSize: '8.2 MB',
+    uploadedBy: 'Kim Johnson', uploadedAt: '2026-03-11T10:45:00Z',
+    projectId: 'p3', projectName: 'PQRS 2026 - NTX Cardiology',
+    status: 'partial', totalPages: 64, recordsExtracted: 18,
+    recordsApproved: 14, recordsRejected: 1, processingTime: '1m 12s', errorMessage: null,
+  },
+  {
+    id: 'ocr-005', fileName: 'Aetna_GPRO_Q1_Records.pdf', fileSize: '15.6 MB',
+    uploadedBy: 'Kim Johnson', uploadedAt: '2026-03-10T16:20:00Z',
+    projectId: 'p4', projectName: 'GPRO 2026 - Aetna TX',
+    status: 'approved', totalPages: 120, recordsExtracted: 28,
+    recordsApproved: 27, recordsRejected: 1, processingTime: '2m 15s', errorMessage: null,
+  },
+  {
+    id: 'ocr-006', fileName: 'BCBSTX_Supplemental_Lab_Results.pdf', fileSize: '5.4 MB',
+    uploadedBy: 'Patricia Williams, RN', uploadedAt: '2026-03-13T07:45:00Z',
+    projectId: 'p1', projectName: 'HEDIS 2026 - BCBSTX',
+    status: 'in_review', totalPages: 38, recordsExtracted: 12,
+    recordsApproved: 7, recordsRejected: 0, processingTime: '0m 48s', errorMessage: null,
+  },
+]
+
+const ocrNames = ['James Miller', 'Maria Santos', 'Robert Chen', 'Angela Davis', 'Thomas Wilson', 'Lisa Nguyen', 'David Kim', 'Patricia Brown', 'Michael Garcia', 'Susan Lee']
+const ocrFacilities = ['TX Health Presby - Dallas', 'Methodist Dallas', 'BSW Temple', 'Parkland Memorial', 'Medical City Dallas']
+const ocrMeasures = [
+  { code: 'CBP', name: 'Controlling Blood Pressure' },
+  { code: 'CDC-HbA1c', name: 'Diabetes HbA1c Control' },
+  { code: 'BCS', name: 'Breast Cancer Screening' },
+  { code: 'COL', name: 'Colorectal Cancer Screening' },
+  { code: 'CIS', name: 'Childhood Immunization Status' },
+]
+
+export const ocrExtractedRecords: OcrExtractedRecord[] = Array.from({ length: 42 }, (_, i) => {
+  const confidence = i < 28 ? 'high' : i < 36 ? 'medium' : 'low'
+  const confScore = confidence === 'high' ? 88 + Math.floor(Math.random() * 12) : confidence === 'medium' ? 65 + Math.floor(Math.random() * 20) : 30 + Math.floor(Math.random() * 30)
+  const status = i < 7 ? 'approved' as const : i < 10 ? 'corrected' as const : i < 12 ? 'rejected' as const : 'pending_review' as const
+  const m = ocrMeasures[i % ocrMeasures.length]
+  const hasBlurry = confidence === 'low'
+  const hasHandwritten = i % 7 === 0
+  const flags: string[] = []
+  if (hasBlurry) flags.push('Low resolution — text may be inaccurate')
+  if (hasHandwritten) flags.push('Handwritten notes detected')
+  if (confidence === 'medium' && i % 3 === 0) flags.push('Date format ambiguous')
+
+  return {
+    id: `ocr-rec-${1000 + i}`,
+    batchId: 'ocr-001',
+    pageRange: `${i * 4 + 1}-${i * 4 + 4}`,
+    confidence,
+    confidenceScore: confScore,
+    status,
+    reviewedBy: status !== 'pending_review' ? 'Maria Gonzalez, RN' : null,
+    reviewedAt: status !== 'pending_review' ? '2026-03-13T10:00:00Z' : null,
+    extractedData: {
+      memberName: ocrNames[i % ocrNames.length],
+      memberId: confidence === 'low' && i % 2 === 0 ? null : `MBR-${300000 + i}`,
+      dob: `${1945 + (i % 40)}-${String(1 + (i % 12)).padStart(2, '0')}-${String(5 + (i % 20)).padStart(2, '0')}`,
+      facility: ocrFacilities[i % ocrFacilities.length],
+      measureCode: m.code,
+      measureName: m.name,
+      dosFrom: `2025-${String(1 + (i % 12)).padStart(2, '0')}-01`,
+      dosTo: `2025-${String(1 + (i % 12)).padStart(2, '0')}-28`,
+      diagnosis: ['Hypertension', 'Type 2 Diabetes', 'Breast mass screening', 'Colon polyp history', 'Routine immunization'][i % 5],
+      provider: ['Dr. S. Chen', 'Dr. J. Whitfield', 'Dr. M. Patel', 'Dr. R. Torres', 'Dr. K. Anderson'][i % 5],
+      notes: confidence === 'low' ? 'OCR partially failed — manual review required' : null,
+    },
+    corrections: status === 'corrected' ? { memberName: ocrNames[(i + 3) % ocrNames.length] } as Record<string, string> : {} as Record<string, string>,
+    flags,
+  }
+})

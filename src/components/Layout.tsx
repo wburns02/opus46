@@ -3,13 +3,14 @@ import { motion } from 'framer-motion'
 import {
   LayoutDashboard, FolderKanban, FileText, Users, Building2,
   ShieldCheck, Receipt, BarChart3, ScrollText, GraduationCap,
-  Settings, Bell, ChevronLeft, ChevronRight
+  Settings, Bell, ChevronLeft, ChevronRight, ScanLine
 } from 'lucide-react'
 import { useState } from 'react'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/projects', icon: FolderKanban, label: 'Projects' },
+  { to: '/ingestion', icon: ScanLine, label: 'OCR Ingestion' },
   { to: '/records', icon: FileText, label: 'Record Queue' },
   { to: '/quality', icon: ShieldCheck, label: 'Quality' },
   { to: '/contractors', icon: Users, label: 'Contractors' },

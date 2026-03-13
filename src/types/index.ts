@@ -151,6 +151,53 @@ export interface ReportType {
   category: 'project' | 'nurse' | 'overread' | 'scheduling' | 'compliance' | 'member'
 }
 
+// ── OCR Ingestion Types ──────────────────────────────────────────
+export type OcrBatchStatus = 'uploading' | 'processing' | 'ready_for_review' | 'in_review' | 'approved' | 'rejected' | 'partial'
+export type OcrRecordConfidence = 'high' | 'medium' | 'low'
+
+export interface OcrBatch {
+  id: string
+  fileName: string
+  fileSize: string
+  uploadedBy: string
+  uploadedAt: string
+  projectId: string
+  projectName: string
+  status: OcrBatchStatus
+  totalPages: number
+  recordsExtracted: number
+  recordsApproved: number
+  recordsRejected: number
+  processingTime: string | null
+  errorMessage: string | null
+}
+
+export interface OcrExtractedRecord {
+  id: string
+  batchId: string
+  pageRange: string
+  confidence: OcrRecordConfidence
+  confidenceScore: number // 0-100
+  status: 'pending_review' | 'approved' | 'rejected' | 'corrected'
+  reviewedBy: string | null
+  reviewedAt: string | null
+  extractedData: {
+    memberName: string | null
+    memberId: string | null
+    dob: string | null
+    facility: string | null
+    measureCode: string | null
+    measureName: string | null
+    dosFrom: string | null
+    dosTo: string | null
+    diagnosis: string | null
+    provider: string | null
+    notes: string | null
+  }
+  corrections: Record<string, string> // field -> corrected value
+  flags: string[] // OCR warnings like "blurry text", "handwritten", etc.
+}
+
 export interface DashboardStats {
   activeProjects: number
   pendingRecords: number
