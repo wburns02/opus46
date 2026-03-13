@@ -7,4 +7,12 @@ export default defineConfig({
     tailwindcss(),
     react(),
   ],
+  preview: {
+    allowedHosts: [
+      'opus46-production.up.railway.app',
+      'opus.ecbtx.com',
+      '.up.railway.app',
+      '.railway.internal',
+    ],
+  },
 })
