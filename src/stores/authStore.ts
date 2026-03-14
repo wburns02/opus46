@@ -64,6 +64,14 @@ const DEMO_USERS: Record<string, { password: string; user: AppUser }> = {
       failedAttempts: 0, lockedUntil: null,
     },
   },
+  'will@kdj.com': {
+    password: '#Espn2025',
+    user: {
+      id: 'u4', name: 'Will Burns', email: 'will@kdj.com', role: 'admin',
+      mfaEnabled: false, lastLogin: '2026-03-14T00:00:00Z', passwordChangedAt: '2026-03-14T00:00:00Z',
+      failedAttempts: 0, lockedUntil: null,
+    },
+  },
 }
 
 export function validatePassword(password: string): { valid: boolean; errors: string[] } {

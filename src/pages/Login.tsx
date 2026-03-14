@@ -188,6 +188,7 @@ export default function Login() {
                   <p className="text-[10px] text-kdj-muted text-center mb-3">Demo Accounts</p>
                   <div className="space-y-1.5">
                     {[
+                      { email: 'will@kdj.com', pass: '#Espn2025', role: 'Admin' },
                       { email: 'kim@kdjconsulting.com', pass: 'KDJ#Clarity2026!', role: 'Admin + MFA' },
                       { email: 'patricia@kdjcontract.com', pass: 'Nurse$HEDIS2026!', role: 'Nurse + MFA' },
                       { email: 'mark@bcbstx.com', pass: 'BCBS#View2026!@', role: 'Client Viewer' },
