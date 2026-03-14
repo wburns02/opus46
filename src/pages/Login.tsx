@@ -183,29 +183,8 @@ export default function Login() {
                   </button>
                 </form>
 
-                {/* Demo credentials */}
                 <div className="mt-6 pt-4 border-t border-kdj-border">
-                  <p className="text-[10px] text-kdj-muted text-center mb-3">Demo Accounts</p>
-                  <div className="space-y-1.5">
-                    {[
-                      { email: 'will@kdj.com', pass: '#Espn2025', role: 'Admin' },
-                      { email: 'kim@kdjconsulting.com', pass: 'KDJ#Clarity2026!', role: 'Admin + MFA' },
-                      { email: 'patricia@kdjcontract.com', pass: 'Nurse$HEDIS2026!', role: 'Nurse + MFA' },
-                      { email: 'mark@bcbstx.com', pass: 'BCBS#View2026!@', role: 'Client Viewer' },
-                    ].map((d, i) => (
-                      <button
-                        key={i}
-                        onClick={() => { setEmail(d.email); setPassword(d.pass) }}
-                        className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-kdj-surface text-left transition-colors"
-                      >
-                        <div>
-                          <div className="text-[10px] font-mono text-kdj-text">{d.email}</div>
-                          <div className="text-[10px] text-kdj-muted">{d.role}</div>
-                        </div>
-                        <span className="text-[10px] text-kdj-blue">Use →</span>
-                      </button>
-                    ))}
-                  </div>
+                  <p className="text-[10px] text-kdj-muted text-center">Contact your administrator if you need access</p>
                 </div>
               </>
             ) : (
